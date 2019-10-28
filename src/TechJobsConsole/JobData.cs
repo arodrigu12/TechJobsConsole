@@ -11,9 +11,18 @@ namespace TechJobsConsole
         static bool IsDataLoaded = false;
 
         public static List<Dictionary<string, string>> FindAll()
-        {
+        {            
             LoadData();
-            return AllJobs;
+            
+            var AllJobsCopy = new List<Dictionary<string, string>>();
+
+            foreach (var dict in AllJobs)    
+            {
+                AllJobsCopy.Add(new Dictionary<string, string>(dict));
+            }
+
+            //return AllJobs;
+            return AllJobsCopy;
         }
 
         /*
@@ -35,7 +44,32 @@ namespace TechJobsConsole
                     values.Add(aValue);
                 }
             }
+
+            values.Sort();
+
             return values;
+        }
+
+        public static List<Dictionary<string, string>> FindByValue(string value)
+        {
+            // load data, if not already loaded
+            LoadData();
+
+            List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
+
+            foreach (var row in AllJobs)
+            {
+                foreach (var val in row.Values)
+                
+                    // Search is case insensitive
+                    if (val.ToLower().Contains(value.ToLower()))
+                    {
+                        jobs.Add(row);
+                        break;
+                    }
+            }
+
+            return jobs;
         }
 
         public static List<Dictionary<string, string>> FindByColumnAndValue(string column, string value)
@@ -49,7 +83,8 @@ namespace TechJobsConsole
             {
                 string aValue = row[column];
 
-                if (aValue.Contains(value))
+                // Search is case insensitive
+                if (aValue.ToLower().Contains(value.ToLower()))
                 {
                     jobs.Add(row);
                 }
